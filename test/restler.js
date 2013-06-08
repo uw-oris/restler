@@ -672,3 +672,21 @@ module.exports['Content-Length'] = {
   }
 
 };
+
+module.exports['EventListener'] = {
+  setUp: setup(echoResponse),
+  tearDown: teardown(),
+
+  'Event listener should be triggered only on its request instance': function (test) {
+    var req1 = rest.get(host);
+    req1.on('complete', function(data) {
+      var req2 = rest.get(host);
+      req2.on('complete', function(data) {
+         test.equal(1, req1.listeners('complete').length, 'only one listener is expected');
+         test.equal(1, req2.listeners('complete').length, 'only one listener is expected');
+         test.done();
+      });
+    });
+  }
+
+}
